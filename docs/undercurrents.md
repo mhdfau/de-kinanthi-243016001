@@ -1,0 +1,10 @@
+# Identifikasi Undercurrents pada pipeline_mini.py
+
+| Undercurrent | Bukti Penerapan di Kode | Kekurangan | Usulan Perbaikan |
+|---|---|---|---|
+| Security | Kredensial dibaca dari `.env` lewat `load_dotenv()`, tidak di-hardcode di kode | Pipeline memakai user `de_user` yang punya hak penuh ke seluruh database | Buat user khusus pipeline dengan hak terbatas: hanya baca tabel transaksi dan tulis ke tabel mart_omzet_harian |
+| Data Management | Fungsi `check_quality()` memvalidasi data: cek duplikasi id_transaksi, total <= 0, dan kanal kosong | Belum ada validasi schema (tipe data kolom, kolom wajib ada) dan belum ada data catalog/dokumentasi metadata | Tambahkan validasi schema di awal ingestion dan buat dokumentasi metadata untuk setiap tabel |
+| DataOps | Logging di setiap tahap pipeline menggunakan modul `logging` dengan format timestamp dan level | Belum ada monitoring otomatis, alerting, atau notifikasi saat pipeline gagal | Tambahkan notifikasi email/Slack ketika pipeline gagal dan buat dashboard monitoring status pipeline |
+| Data Architecture | Pemisahan tahap yang jelas: ingest -> store_raw -> check_quality -> transform -> serve, mengikuti pola data lifecycle | Semua fungsi masih dalam satu file monolitik, belum ada pemisahan layer (raw, staging, mart) secara eksplisit | Pisahkan tiap tahap menjadi modul terpisah dan terapkan arsitektur medallion (bronze/silver/gold) |
+| Orchestration | Fungsi `main()` mengatur urutan eksekusi seluruh tahap secara sekuensial | Belum ada scheduler otomatis, masih dijalankan manual dari terminal | Gunakan scheduler seperti cron job atau Apache Airflow untuk menjalankan pipeline secara terjadwal |
+| Software Engineering | Menggunakan virtual environment (.venv), file `.env` untuk konfigurasi, Path dari pathlib untuk pengelolaan file | Belum ada unit test, belum ada type checking yang ketat, dan belum ada CI/CD | Tambahkan pytest untuk unit test setiap fungsi, gunakan mypy untuk type checking, dan setup GitHub Actions untuk CI/CD |
