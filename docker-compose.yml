@@ -2,10 +2,11 @@ services:
   postgres:
     image: postgres:16
     container_name: pg_kinanthi
+    restart: unless-stopped
     environment:
-      POSTGRES_USER: ${DB_USER}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
-      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_DB: kinanthi
+      POSTGRES_USER: de_user
+      POSTGRES_PASSWORD: de_password_aman123
     ports:
       - "5432:5432"
     volumes:
